@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Legal Metrology Verification Portal — SIH26036</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="nameplate">
+  <div class="app-wrap nameplate-inner">
+    <div class="brand">
+      <svg class="seal" viewBox="0 0 48 48" fill="none">
+        <circle cx="24" cy="24" r="21" stroke="#B8863C" stroke-width="2"/>
+        <path d="M24 10v6M24 32v6M10 24h6M32 24h6M15 15l4 4M29 29l4 4M15 33l4-4M29 19l4-4" stroke="#B8863C" stroke-width="1.4" stroke-linecap="round"/>
+        <circle cx="24" cy="24" r="8" stroke="#D4A855" stroke-width="1.6"/>
+        <circle cx="24" cy="24" r="2" fill="#D4A855"/>
+      </svg>
+      <div class="brand-text">
+        <h1>Legal Metrology Verification Portal</h1>
+        <div class="sub">Ministry of Consumer Affairs, Food &amp; Public Distribution, Government of India</div>
+      </div>
+    </div>
+    <nav class="roles" id="roleNav">
+      <button data-role="home" class="active">Home</button>
+      <button data-role="owner">Owner / Dealer</button>
+      <button data-role="inspector">Inspector</button>
+      <button data-role="admin">Ministry Admin</button>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="app-wrap">
+
+    <!-- ================= HOME / PUBLIC VIEW ================= -->
+    <section class="view active" id="view-home">
+      <div class="hero">
+        <div class="hero-text">
+          <h2>Every stamp, verified in seconds.</h2>
+          <p class="lead">Weighing scales, weighbridges, fuel dispensers and water meters across India must be tested and stamped before use. This portal moves that entire process online — registration, inspection, digital certification and public verification — in one place.</p>
+
+          <div class="lookup-box">
+            <label for="lookupInput">Instrument ID or certificate number</label>
+            <div class="lookup-row">
+              <input id="lookupInput" type="text" placeholder="e.g. WM-2026-004512" />
+              <button class="btn" onclick="doLookup()">Check verification status</button>
+            </div>
+            <div class="lookup-hint">Try a sample: <button onclick="fillSample('WM-2026-004512')">WM-2026-004512</button> · <button onclick="fillSample('FD-2025-118820')">FD-2025-118820</button> · <button onclick="fillSample('WB-2024-003310')">WB-2024-003310</button></div>
+          </div>
+
+          <div id="lookupResult"></div>
+        </div>
+
+        <div class="hero-gauge">
+          <svg width="300" height="230" viewBox="0 0 300 230">
+            <path d="M30 190 A120 120 0 0 1 270 190" fill="none" stroke="#333C49" stroke-width="14"/>
+            <path d="M30 190 A120 120 0 0 1 150 70" fill="none" stroke="#3E7A5B" stroke-width="14"/>
+            <path d="M150 70 A120 120 0 0 1 230 108" fill="none" stroke="#C9A227" stroke-width="14"/>
+            <path d="M230 108 A120 120 0 0 1 270 190" fill="none" stroke="#C05A3E" stroke-width="14"/>
+            <g id="gaugeNeedle" style="transform-origin:150px 190px;">
+              <line x1="150" y1="190" x2="95" y2="100" stroke="#EDE7D8" stroke-width="3" stroke-linecap="round"/>
+            </g>
+            <circle cx="150" cy="190" r="9" fill="#B8863C"/>
+            <text x="150" y="215" text-anchor="middle" fill="#98A1AF" font-family="IBM Plex Mono" font-size="11">NATIONAL VERIFICATION LOAD</text>
+          </svg>
+        </div>
+      </div>
+
+      <div class="steps">
+        <div class="step">
+          <div class="num mono">01</div>
+          <h3>Register the instrument</h3>
+          <p>Owners and dealers list each weighing or measuring instrument with its serial number, type and location, and receive a unique instrument ID.</p>
+        </div>
+        <div class="step">
+          <div class="num mono">02</div>
+          <h3>Inspect and test</h3>
+          <p>A Legal Metrology officer schedules a physical test against reference standards and records the accuracy readings against permitted error limits.</p>
+        </div>
+        <div class="step">
+          <div class="num mono">03</div>
+          <h3>Certify and stamp digitally</h3>
+          <p>A signed digital certificate with a QR code replaces the physical stamp. Anyone can scan or search it to confirm it's genuine and current.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= OWNER / DEALER VIEW ================= -->
+    <section class="view" id="view-owner">
+      <div class="section-head">
+        <div>
+          <h2>Owner &amp; dealer dashboard</h2>
+          <p>Register instruments, apply for verification and track certificates.</p>
+        </div>
+        <button class="btn" onclick="openRegisterModal()">Register new instrument</button>
+      </div>
+
+      <div class="stat-strip" id="ownerStats"></div>
+
+      <div class="panel-card">
+        <div class="flex-between" style="margin-bottom:16px;">
+          <h3 style="margin:0;">My instruments</h3>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr>
+              <th>Instrument ID</th><th>Type</th><th>Model</th><th>Location</th><th>Status</th><th>Valid until</th><th></th>
+            </tr></thead>
+            <tbody id="ownerInstrumentsBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="panel-card">
+        <h3>Verification applications</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr>
+              <th>Application ID</th><th>Instrument</th><th>Applied on</th><th>Assigned officer</th><th>Status</th>
+            </tr></thead>
+            <tbody id="ownerApplicationsBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= INSPECTOR VIEW ================= -->
+    <section class="view" id="view-inspector">
+      <div class="section-head">
+        <div>
+          <h2>Inspector workbench</h2>
+          <p>Conduct tests against reference standards and issue digital certificates.</p>
+        </div>
+      </div>
+
+      <div class="stat-strip" id="inspectorStats"></div>
+
+      <div class="panel-card">
+        <h3>Assigned applications</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr>
+              <th>Application ID</th><th>Instrument</th><th>Owner</th><th>Type</th><th>Applied on</th><th>Status</th><th></th>
+            </tr></thead>
+            <tbody id="inspectorQueueBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= ADMIN VIEW ================= -->
+    <section class="view" id="view-admin">
+      <div class="section-head">
+        <div>
+          <h2>Ministry oversight</h2>
+          <p>Nationwide visibility into registration, inspection and certification activity.</p>
+        </div>
+      </div>
+
+      <div class="stat-strip" id="adminStats"></div>
+
+      <div class="panel-card">
+        <h3>Verifications by state</h3>
+        <div id="adminBarChart"></div>
+      </div>
+
+      <div class="panel-card">
+        <div class="flex-between" style="margin-bottom:16px;">
+          <h3 style="margin:0;">All registered instruments</h3>
+          <select id="adminFilter" onchange="renderAdmin()" style="background:var(--panel-2);color:var(--text);border:1px solid var(--line);padding:8px 10px;border-radius:2px;">
+            <option value="all">All statuses</option>
+            <option value="Verified">Verified</option>
+            <option value="Pending">Pending</option>
+            <option value="Expired">Expired</option>
+            <option value="Rejected">Rejected</option>
+          </select>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr>
+              <th>Instrument ID</th><th>Type</th><th>Owner</th><th>State</th><th>Status</th><th>Last verified</th>
+            </tr></thead>
+            <tbody id="adminInstrumentsBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<footer>
+  <div class="app-wrap">
+    <span>SIH26036 — Prototype build for demonstration purposes</span>
+    <span>Working data is generated in-browser and resets on reload</span>
+  </div>
+</footer>
+
+<!-- ============ MODALS ============ -->
+<div class="modal-backdrop" id="registerModalBackdrop">
+  <div class="modal">
+    <div class="modal-close-row"><button class="icon-x" onclick="closeModal('registerModalBackdrop')">&times;</button></div>
+    <h3>Register a new instrument</h3>
+    <div class="modal-sub">This creates an instrument record and issues an instrument ID. It does not verify the instrument.</div>
+    <div class="form-grid">
+      <div class="field">
+        <label>Instrument type</label>
+        <select id="regType">
+          <option>Weighing Scale</option>
+          <option>Weighbridge</option>
+          <option>Fuel Dispenser</option>
+          <option>Water Meter</option>
+          <option>Taximeter</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Manufacturer</label>
+        <input id="regManufacturer" placeholder="e.g. Avery India" />
+      </div>
+      <div class="field">
+        <label>Model / capacity</label>
+        <input id="regModel" placeholder="e.g. 30kg platform scale" />
+      </div>
+      <div class="field">
+        <label>Serial number</label>
+        <input id="regSerial" placeholder="e.g. SN-88213" />
+      </div>
+      <div class="field full">
+        <label>Installed location</label>
+        <input id="regLocation" placeholder="e.g. Sadar Bazaar, Ghaziabad, Uttar Pradesh" />
+      </div>
+    </div>
+    <div class="form-actions">
+      <button class="btn subtle" onclick="closeModal('registerModalBackdrop')">Cancel</button>
+      <button class="btn" onclick="submitRegister()">Register instrument</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="testModalBackdrop">
+  <div class="modal">
+    <div class="modal-close-row"><button class="icon-x" onclick="closeModal('testModalBackdrop')">&times;</button></div>
+    <h3>Record test result</h3>
+    <div class="modal-sub" id="testModalSub"></div>
+    <div class="form-grid">
+      <div class="field">
+        <label>Reference standard used</label>
+        <input id="testStandard" placeholder="e.g. Class M1 test weight set" />
+      </div>
+      <div class="field">
+        <label>Observed error</label>
+        <input id="testError" placeholder="e.g. 0.04%" />
+      </div>
+      <div class="field full">
+        <label>Remarks</label>
+        <textarea id="testRemarks" rows="3" placeholder="Notes for the record"></textarea>
+      </div>
+    </div>
+    <div class="form-actions">
+      <button class="btn subtle" onclick="decideTest(false)">Reject</button>
+      <button class="btn" onclick="decideTest(true)">Approve &amp; issue certificate</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="certModalBackdrop">
+  <div class="modal" style="max-width:620px;">
+    <div class="modal-close-row"><button class="icon-x" onclick="closeModal('certModalBackdrop')">&times;</button></div>
+    <div id="certificateArea"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="js/app.js"></script>
+</body>
+</html>
